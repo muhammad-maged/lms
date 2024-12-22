@@ -1,12 +1,11 @@
-package entity;
+package com.example.LMS.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "assessments")
-public class Assessment {
+@Table(name = "lessons")
+public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,21 +14,15 @@ public class Assessment {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Type type;
-
     @Column(nullable = false)
     private String title;
 
-    private String description;
+    private String content; // Optional: Path to media file
+
+    private String otpCode; // OTP for attendance
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    public enum Type {
-        QUIZ, ASSIGNMENT
-    }
 
     // Getters and setters
 }

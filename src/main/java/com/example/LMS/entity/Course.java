@@ -1,6 +1,5 @@
-package entity;
+package com.example.LMS.entity;
 
-import entity.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

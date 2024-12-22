@@ -1,6 +1,6 @@
-package repository;
+package com.example.LMS.repository;
 
-import entity.Enrollment;
+import com.example.LMS.entity.Enrollment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
