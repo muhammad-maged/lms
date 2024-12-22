@@ -5,28 +5,31 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "assessments")
+public class Assessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private Type type;
+
+    @Column(nullable = false)
+    private String title;
+
+    private String description;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Getters and setters
-
-    public enum Role {
-        ADMIN, INSTRUCTOR, STUDENT
+    public enum Type {
+        QUIZ, ASSIGNMENT
     }
+
+    // Getters and setters
 }
