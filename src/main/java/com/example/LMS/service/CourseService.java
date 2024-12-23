@@ -3,7 +3,9 @@ package com.example.LMS.service;
 import com.example.LMS.dto.CourseRequest;
 import com.example.LMS.entity.Course;
 import com.example.LMS.entity.User;
+import com.example.LMS.entity.Lesson;
 import com.example.LMS.repository.CourseRepository;
+import com.example.LMS.repository.LessonRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,9 +18,11 @@ import java.nio.file.Paths;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final LessonRepository lessonRepository;
 
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository, LessonRepository lessonRepository) {
         this.courseRepository = courseRepository;
+        this.lessonRepository = lessonRepository;
     }
 
     public Course createCourse(CourseRequest courseRequest, User instructor) {
@@ -53,4 +57,11 @@ public class CourseService {
         }
     }
 
+    public Lesson addLessonToCourse(Long courseId, Lesson lesson) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        lesson.setCourse(course);
+        return lessonRepository.save(lesson);
+    }
 }
