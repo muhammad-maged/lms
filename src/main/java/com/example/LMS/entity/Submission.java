@@ -51,4 +51,12 @@ public class Submission {
     public void setFeedback(String s) {
         this.feedback = s;
     }
+
+    public Object getScore() {
+        return this.score;
+    }
+
+    public byte[] getFeedback() {
+        return this.feedback.getBytes();
+    }
 }

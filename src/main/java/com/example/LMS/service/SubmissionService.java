@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,27 @@ public class SubmissionService {
         Map<String, Object> result = new HashMap<>();
         result.put("score", score);
         result.put("feedback", feedback);
+        return result;
+    }
+
+    public Map<String, Object> getQuizGrade(Long quizId, User student) throws IOException {
+        // Validate the quiz
+        Assessment quiz = assessmentRepository.findById(quizId)
+                .orElseThrow(() -> new IllegalArgumentException("Quiz not found"));
+
+        // Ensure the student is enrolled in the course
+/*        if (!enrollmentRepository.existsByStudentIdAndCourseId(student.getId(), quiz.getCourse().getId())) {
+            throw new IllegalArgumentException("You are not enrolled in this course.");
+        }*/
+
+        // Retrieve the student's submission
+        Submission submission = submissionRepository.findByQuizIdAndStudentId(quizId, student.getId())
+                .orElseThrow(() -> new IllegalArgumentException("You have not submitted this quiz."));
+
+        // Prepare the response
+        Map<String, Object> result = new HashMap<>();
+        result.put("score", submission.getScore());
+        result.put("feedback", new ObjectMapper().readValue(submission.getFeedback(), Map.class)); // Convert JSON feedback to a map
         return result;
     }
 }

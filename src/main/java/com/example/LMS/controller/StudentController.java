@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,17 @@ public class StudentController {
 
         User student = userDetails.getUser(); // Get the full User entity
         Map<String, Object> result = submissionService.submitQuiz(quizId, answers, student);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/quizzes/{quizId}/grade")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Map<String, Object>> getQuizGrade(
+            @PathVariable Long quizId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+
+        User student = userDetails.getUser(); // Get the full User entity
+        Map<String, Object> result = submissionService.getQuizGrade(quizId, student);
         return ResponseEntity.ok(result);
     }
 
