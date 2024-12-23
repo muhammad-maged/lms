@@ -7,6 +7,7 @@ import com.example.LMS.entity.User;
 import com.example.LMS.service.CourseService;
 import com.example.LMS.security.CustomUserDetails;
 import com.example.LMS.service.EnrollmentService;
+import com.example.LMS.service.LessonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,10 +26,13 @@ public class InstructorController {
     private final CourseService courseService;
     private final EnrollmentService enrollmentService;
 
+    private final LessonService lessonService;
 
-    public InstructorController(CourseService courseService, EnrollmentService enrollmentService) {
+
+    public InstructorController(CourseService courseService, EnrollmentService enrollmentService, LessonService lessonService) {
         this.courseService = courseService;
         this.enrollmentService = enrollmentService;
+        this.lessonService = lessonService;
     }
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -57,6 +61,16 @@ public class InstructorController {
         List<User> students = enrollmentService.getEnrolledStudents(courseId);
         return ResponseEntity.ok(students);
     }
+
+    @PostMapping("/lessons/{lessonId}/generate-otp")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<String> generateOtp(@PathVariable Long lessonId, @AuthenticationPrincipal CustomUserDetails userDetails)
+    {
+        User instructor = userDetails.getUser(); // Get the full User entity
+        String otp = lessonService.generateOtp(lessonId, instructor);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("OTP generated: " + otp);
+
+    }
+
 }
-
-
