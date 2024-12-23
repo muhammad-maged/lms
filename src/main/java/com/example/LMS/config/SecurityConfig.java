@@ -23,15 +23,13 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection (for APIs)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/api/public/**").permitAll() // Allow unauthenticated access to these endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/instructor/**").hasRole("INSTRUCTOR")
                         .requestMatchers("/api/student/**").hasRole("STUDENT")
-                        .requestMatchers("/api/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(AbstractHttpConfigurer::disable) // Updated httpBasic configuration
-        ;
-
+                .httpBasic(httpBasic -> httpBasic.realmName("LMS API")); // Enable HTTP Basic Authentication
         return http.build();
     }
 

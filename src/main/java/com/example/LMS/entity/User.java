@@ -1,5 +1,6 @@
 package com.example.LMS.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class User {
     private String username;
 
     @Column(nullable = false)
+    @cJsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
