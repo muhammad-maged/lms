@@ -1,15 +1,9 @@
 package com.example.LMS.controller;
 
 import com.example.LMS.dto.CourseRequest;
-import com.example.LMS.entity.Assessment;
-import com.example.LMS.entity.Course;
-import com.example.LMS.entity.Lesson;
-import com.example.LMS.entity.User;
-import com.example.LMS.service.CourseService;
+import com.example.LMS.entity.*;
+import com.example.LMS.service.*;
 import com.example.LMS.security.CustomUserDetails;
-import com.example.LMS.service.EnrollmentService;
-import com.example.LMS.service.LessonService;
-import com.example.LMS.service.AssessmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,13 +24,17 @@ public class InstructorController {
     private final LessonService lessonService;
     private final AssessmentService assessmentService;
 
+    private final QuestionService questionService;
+
 
     public InstructorController(CourseService courseService, EnrollmentService enrollmentService,
-                                LessonService lessonService, AssessmentService assessmentService, AssessmentService assessmentService1) {
+                                LessonService lessonService, AssessmentService assessmentService,
+                                AssessmentService assessmentService1, QuestionService questionService) {
         this.courseService = courseService;
         this.enrollmentService = enrollmentService;
         this.lessonService = lessonService;
         this.assessmentService = assessmentService1;
+        this.questionService = questionService;
     }
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -86,6 +84,18 @@ public class InstructorController {
 
         Assessment createdQuiz = assessmentService.createAssessment(courseId, assessment);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuiz);
+    }
+
+    @PostMapping("/quizzes/{quizId}/questions")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<Question> addQuestionToQuiz(
+            @PathVariable Long quizId,
+            @RequestBody Question questionRequest,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        User instructor = userDetails.getUser(); // Get the full User entity
+        Question createdQuestion = questionService.addQuestionToQuiz(quizId, questionRequest, instructor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
 
