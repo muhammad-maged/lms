@@ -10,6 +10,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.Map;
+
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -23,18 +26,19 @@ public class InstructorController {
     private final EnrollmentService enrollmentService;
     private final LessonService lessonService;
     private final AssessmentService assessmentService;
-
     private final QuestionService questionService;
+    private final ProgressService progressService;
 
 
     public InstructorController(CourseService courseService, EnrollmentService enrollmentService,
                                 LessonService lessonService, AssessmentService assessmentService,
-                                AssessmentService assessmentService1, QuestionService questionService) {
+                                AssessmentService assessmentService1, QuestionService questionService, ProgressService progressService) {
         this.courseService = courseService;
         this.enrollmentService = enrollmentService;
         this.lessonService = lessonService;
         this.assessmentService = assessmentService1;
         this.questionService = questionService;
+        this.progressService = progressService;
     }
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -99,5 +103,28 @@ public class InstructorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
+    @GetMapping("/courses/{courseId}/progress")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<List<Map<String, Object>>> getProgress(
+            @PathVariable Long courseId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        User instructor = userDetails.getUser(); // Get the full User entity
+        List<Map<String, Object>> progressData = progressService.getProgressData(courseId, instructor);
+        return ResponseEntity.ok(progressData);
+    }
+
+    @GetMapping(value = "/courses/{courseId}/progress/excel", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<byte[]> downloadProgressExcel(
+            @PathVariable Long courseId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+
+        User instructor = userDetails.getUser(); // Get the full User entity
+        byte[] excelData = progressService.generateProgressExcel(courseId, instructor);
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=progress.xlsx")
+                .body(excelData);
+    }
 
 }
