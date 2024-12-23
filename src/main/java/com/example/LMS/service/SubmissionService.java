@@ -43,10 +43,10 @@ public class SubmissionService {
             throw new IllegalArgumentException("This assessment is not a quiz.");
         }
 
-
+/*
         if (!enrollmentRepository.existsByStudentIdAndCourseId(student.getId(), quiz.getCourse().getId())) {
             throw new IllegalArgumentException("You are not enrolled in this course.");
-        }
+        }*/
 
         // Validate answers and calculate score
         List<Question> questions = questionRepository.findByAssessmentId(quizId);
