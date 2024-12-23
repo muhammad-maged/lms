@@ -46,7 +46,7 @@ public class EnrollmentService {
     }
 
     public List<User> getEnrolledStudents(Long courseId) {
-        List<Enrollment> enrollments = enrollmentRepository.findByCourseId(courseId);
-        return enrollments.stream().map(Enrollment::getStudent).toList();
+        return enrollmentRepository.findStudentsByCourseId(courseId);
     }
+
 }

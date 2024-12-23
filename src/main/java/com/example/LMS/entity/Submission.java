@@ -20,21 +20,35 @@ public class Submission {
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
-    @Column(name = "file_path")
-    private String filePath; // For assignments
+    @Column(name = "answers", nullable = false)
+    private String answers; // JSON format: {"1": "A", "2": "True"}
 
-    @Column(name = "answers")
-    private String answers; // JSON string for quiz answers
+    @Column(name = "score", nullable = false)
+    private double score;
 
-    @Column
-    private Double grade;
+    @Column(name = "feedback", nullable = false)
+    private String feedback; // JSON format: {"1": "Correct", "2": "Incorrect"}
 
-    @Column
-    private String feedback;
-
-    @Column(name = "submitted_at", updatable = false)
+    @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt = LocalDateTime.now();
 
-    // Getters and setters
-}
+    public void setAssessment(Assessment quiz) {
+        this.assessment = quiz;
+    }
 
+    public void setStudent(User student) {
+        this.student = student;
+    }
+
+    public void setAnswers(String s) {
+        this.answers = s;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public void setFeedback(String s) {
+        this.feedback = s;
+    }
+}

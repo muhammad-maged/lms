@@ -27,7 +27,7 @@ public class QuestionService {
 
         // Ensure the instructor is authorized to add questions to the quiz
         if (!Objects.equals(quiz.getCourse().getInstructor().getId(), instructor.getId())) {
-            throw new IllegalArgumentException("You are not authorized to generate OTP for this lesson");
+            throw new IllegalArgumentException("You are not authorized to add questions to this quiz.");
         }
 
         // Ensure the assessment is a quiz

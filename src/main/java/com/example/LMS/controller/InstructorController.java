@@ -64,6 +64,7 @@ public class InstructorController {
         return ResponseEntity.ok(students);
     }
 
+
     @PostMapping("/lessons/{lessonId}/generate-otp")
     @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<String> generateOtp(@PathVariable Long lessonId, @AuthenticationPrincipal CustomUserDetails userDetails)
