@@ -24,6 +24,18 @@ public class Lesson {
     @Column(nullable = false)
     private int sequence; // Order of the lesson in the course
 
+    @Column(name = "otp_code", nullable = true)
+    private String otpCode;
+
+    // Getter and Setter
+    public String getOtpCode() {
+        return otpCode;
+    }
+
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;
