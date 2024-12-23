@@ -1,6 +1,7 @@
 package com.example.LMS.controller;
 
 import com.example.LMS.dto.CourseRequest;
+import com.example.LMS.entity.Assessment;
 import com.example.LMS.entity.Course;
 import com.example.LMS.entity.Lesson;
 import com.example.LMS.entity.User;
@@ -8,6 +9,7 @@ import com.example.LMS.service.CourseService;
 import com.example.LMS.security.CustomUserDetails;
 import com.example.LMS.service.EnrollmentService;
 import com.example.LMS.service.LessonService;
+import com.example.LMS.service.AssessmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,14 +27,16 @@ public class InstructorController {
 
     private final CourseService courseService;
     private final EnrollmentService enrollmentService;
-
     private final LessonService lessonService;
+    private final AssessmentService assessmentService;
 
 
-    public InstructorController(CourseService courseService, EnrollmentService enrollmentService, LessonService lessonService) {
+    public InstructorController(CourseService courseService, EnrollmentService enrollmentService,
+                                LessonService lessonService, AssessmentService assessmentService, AssessmentService assessmentService1) {
         this.courseService = courseService;
         this.enrollmentService = enrollmentService;
         this.lessonService = lessonService;
+        this.assessmentService = assessmentService1;
     }
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -72,5 +76,17 @@ public class InstructorController {
         return ResponseEntity.status(HttpStatus.CREATED).body("OTP generated: " + otp);
 
     }
+
+    @PostMapping("/courses/{courseId}/quizzes")
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<Assessment> createQuiz(
+            @PathVariable Long courseId,
+            @RequestBody Assessment assessment) {
+        assessment.setType(Assessment.Type.QUIZ);
+
+        Assessment createdQuiz = assessmentService.createAssessment(courseId, assessment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuiz);
+    }
+
 
 }

@@ -1,11 +1,13 @@
 package com.example.LMS.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "submissions")
 public class Submission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,14 +20,21 @@ public class Submission {
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
-    private String filePath; // Path to uploaded file
+    @Column(name = "file_path")
+    private String filePath; // For assignments
 
-    private Double grade; // Grade out of 100
+    @Column(name = "answers")
+    private String answers; // JSON string for quiz answers
 
-    private String feedback; // Instructor feedback
+    @Column
+    private Double grade;
+
+    @Column
+    private String feedback;
 
     @Column(name = "submitted_at", updatable = false)
     private LocalDateTime submittedAt = LocalDateTime.now();
 
     // Getters and setters
 }
+
